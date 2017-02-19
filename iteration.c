@@ -5,6 +5,7 @@
 void read_matrix(int n, float **matr, FILE *f); 
 void print_matrix(int n, float **matr); 
 void iteration(int n, float **matr);
+int col_iteration(int n, float **matr);
 
 int main()
 {
@@ -23,8 +24,10 @@ int main()
     }
     read_matrix(n, mas, f);
     print_matrix(n, mas);
-	
-	iteration(n, mas);
+
+	i = col_iteration(n, mas);
+	printf("N =%d \n",i);
+	//iteration(n, mas);
     //print_matrix(n, mas);
 
     fclose(f);
@@ -111,4 +114,45 @@ void iteration(int n, float **matr){
 	printf("\n******************\n");		
 	
 		
+}
+
+////тут считаем кол.во итераций
+//как это делается я  хз, сдесь магия
+int col_iteration(int n, float **matr){
+	
+	int i, j;
+	double c1=0,c2=0;
+	double b[n];
+	float e = 0.0001;
+	for(i = 0; i < n; i++){
+
+		for(j = 0; j < n; j++){
+
+			c1 += matr[i][j];
+		}
+
+		if(i == 0)
+			c2=c1;
+		else if(c1 > c2)
+				c2 = c1;
+		c1=0;
+		b[i] = matr[i][n];
+	}
+
+	double b1 = b[0];
+	for(i = 0; i < n; i++)
+		if(b[i] > b1)
+			b1 = b[i];
+	double a = (e * (1 - c2)) / b1;
+	
+	double q, w;
+	//a = abs(a);
+	//c2 = abs(c2);
+	//printf("a = %f, c2 = %f \n", a, c2);
+	q = log(a);
+	w = log(c2);
+	
+	int N=q/w;
+	
+	return N;
 }
