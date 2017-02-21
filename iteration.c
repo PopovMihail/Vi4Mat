@@ -5,7 +5,6 @@
 void read_matrix(int n, float **matr, FILE *f); 
 void print_matrix(int n, float **matr); 
 void iteration(int n, float **matr);
-int col_iteration(int n, float **matr);
 
 int main()
 {
@@ -24,14 +23,12 @@ int main()
     }
     read_matrix(n, mas, f);
     print_matrix(n, mas);
-
-	i = col_iteration(n, mas);
-	printf("N =%d \n",i);
-	//iteration(n, mas);
+    
+	iteration(n, mas);
     //print_matrix(n, mas);
 
     fclose(f);
- // system("PAUSE");	
+  system("PAUSE");	
   return 0;
 }
 
@@ -58,12 +55,11 @@ void print_matrix(int n, float **matr){
 
 void iteration(int n, float **matr){
  
-	int i, j, k = 0;
+	int i, j, k = 0, f;
 	float temp;
 	float x[n];
 	float t[n];
-	//делю каждую строку на диагональный элемент
-	//тобиш выставляю единицы на гл. деагонали
+	
 	for (i = 0; i < n; i++ ) {
 		temp = matr[i][i];
 		for(j = 0; j < n + 1; j++){
@@ -71,8 +67,7 @@ void iteration(int n, float **matr){
 				matr[i][j] /= temp;			
 		}
 	}
-	//зануляю гл. диагональ
-	//и паралельно зануляю х вектор
+	
 	for (i = 0; i < n; i++ ) {
 		for(j = 0; j < n + 1; j++){
 			matr[i][i] = 0;
@@ -81,78 +76,47 @@ void iteration(int n, float **matr){
 		}
 	}
 	
-	//сам метод
-	while(k < 7){
-		
-		//тут короче говоря 
-		//в итый элемент темпового массива записываем
-		//каждый итый элемент матрицы умноженый а Х вектор 
-		for (i = 0; i < n; i++ ) {
+	//ñàì ìåòîä
+	while(f != n){
+		f = 0;
+	
+	    /*for (i = 0; i < n; i++ ) {
 			for(j = 0; j < n ; j++){
 				t[i] = t[i] - matr[i][j] * x[j];
 			}
-		}
-		// а тута
-		//в итый элемент массива вектора записываем из
-		//темпового массива итый элемент + эный элемент
-		//матрыцы
-		//это для того что типа там же выражать Х1 Х2 надо было и все такое
-		//и зануляем темповый массив а пздц будет
+		}*/
 		for (i = 0; i < n; i++ ) {
-			 x[i] = t[i] + matr[i][n];
-			 t[i] = 0;
+			for(j = 0; j < n ; j++){
+				if(i == 0){
+                     t[i] = t[i] - matr[i][j] * x[j];
+                     }
+             t[i] = t[i] - matr[i][j] * t[j];
+            }
 		}
+	
+	for (i = 0; i < n; i++ ) {
+           // printf("del = %.5f\n", fabs(t[i] + matr[i][n] - x[i]));
+            	if(fabs(t[i] + matr[i][n] - x[i]) <= 0.001){
+                    	f++;
+            	}
+		x[i] = t[i] + matr[i][n];
+	 	t[i] = 0;
+	}
+		//sleep(500);
+        
 		k++;
 	}
-	//в итоге все по красоте выводим 
-	//и радуемся жизни =)
+	
+	
+	//â èòîãå âñå ïî êðàñîòå âûâîäèì 
+	//è ðàäóåìñÿ æèçíè =)
 	
 	printf("Ответ:\n");
 	printf("******************\n");
 	for(i = 0; i < n; i++)
 		printf("x%d = %.3f\t", i+1, x[i]);
-	printf("\n******************\n");		
+    printf("\nКол-во итераций = %d",k);	
+    printf("\n******************\n");		
 	
 		
-}
-
-////тут считаем кол.во итераций
-//как это делается я  хз, сдесь магия
-int col_iteration(int n, float **matr){
-	
-	int i, j;
-	double c1=0,c2=0;
-	double b[n];
-	float e = 0.0001;
-	for(i = 0; i < n; i++){
-
-		for(j = 0; j < n; j++){
-
-			c1 += matr[i][j];
-		}
-
-		if(i == 0)
-			c2=c1;
-		else if(c1 > c2)
-				c2 = c1;
-		c1=0;
-		b[i] = matr[i][n];
-	}
-
-	double b1 = b[0];
-	for(i = 0; i < n; i++)
-		if(b[i] > b1)
-			b1 = b[i];
-	double a = (e * (1 - c2)) / b1;
-	
-	double q, w;
-	//a = abs(a);
-	//c2 = abs(c2);
-	//printf("a = %f, c2 = %f \n", a, c2);
-	q = log(a);
-	w = log(c2);
-	
-	int N=q/w;
-	
-	return N;
 }
