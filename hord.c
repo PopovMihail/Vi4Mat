@@ -30,7 +30,7 @@ int main(){
           return 0;
      }
     printf("\nТочность:\n");
-    scanf("%lf", &b);
+    scanf("%lf", &eps);
     //Поиск решения:
     x=FindRoot(F,a,b,eps);
     printf("\nX = %f\n", x);
